@@ -1,0 +1,71 @@
+import { getDevotionalsBySlug } from "@/actions/Devotional";
+import { getDevotionalDays } from "@/actions/DevotionalDays";
+import { getProfileById } from "@/lib/auth";
+import { Devotional } from "@/types/Tables";
+import { notFound } from "next/navigation";
+
+// Componentes UI
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
+import { ContentDevotional } from "@/components/devotionals/ContentDevotional";
+// Importando o novo componente
+import { DevotionalDaysContent } from "@/components/devotionals/devotional_days/DevotionalDaysContent";
+
+interface DevotionalPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function ShowDevotional({ params }: DevotionalPageProps) {
+  const { slug } = await params;
+
+  // 1. Fetch Data
+  const result = await getDevotionalsBySlug(slug);
+  if (!result.data) return notFound();
+
+  const devotional: Devotional = result.data;
+  const daysResult = await getDevotionalDays(devotional.id);
+  const days = daysResult.data || [];
+
+  const authorResponse = await getProfileById(devotional.author_id);
+  const authorName = authorResponse.data?.name || "Equipe Abide";
+
+  return (
+    <article className="min-h-screen pb-20">
+      {/* --- HERO SECTION --- */}
+      <div className="relative w-full h-[40vh] md:h-[50vh] bg-surface">
+        {devotional.image_url ? (
+          <Image
+            src={devotional.image_url}
+            alt={devotional.title}
+            fill
+            className="object-cover opacity-60"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-background" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+
+        <div className="absolute top-6 left-4 md:left-8 z-10">
+          <Link
+            href="/devotionals"
+            className="flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors bg-background/50 backdrop-blur-md px-4 py-2 rounded-full border border-border"
+          >
+            <ArrowLeft size={18} />
+            <span className="text-sm font-medium">Voltar</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* --- CONTEÚDO PRINCIPAL --- */}
+      <div className="container mx-auto px-4 -mt-20 relative z-10">
+        {/* Componente de Conteúdo do Devocional (Título, Descrição, Metadados) */}
+        <ContentDevotional devotional={devotional} authorName={authorName} />
+
+        {/* Componente da Lista de Dias */}
+        <DevotionalDaysContent days={days} slug={slug} />
+      </div>
+    </article>
+  );
+}
