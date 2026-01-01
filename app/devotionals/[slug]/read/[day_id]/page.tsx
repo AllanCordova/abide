@@ -17,21 +17,13 @@ interface ReadingPageProps {
 export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
   const { slug, day_id } = await params;
 
-  const { data: day, error } = await getDevotionalDayById(day_id);
-
-  if (error || !day) {
-    return notFound();
-  }
+  const { data: day } = await getDevotionalDayById(day_id);
 
   const verseResponse = await getVersesByDay(day.id);
   const verses = Array.isArray(verseResponse.data) ? verseResponse.data : [];
   let isCompleted = false;
 
   const response = await getSubscribed(day.devotional_id, day.id);
-
-  if (response.error) {
-    console.log(response.error);
-  }
 
   const completedDay: DaySubscriptions = response.data;
 

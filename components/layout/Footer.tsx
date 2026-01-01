@@ -7,10 +7,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-surface border-t border-border mt-auto">
-      {/* --- Parte Principal (Grid) --- */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Coluna 1: Marca e Missão */}
           <div className="col-span-1 md:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2 group w-fit">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -27,7 +25,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Coluna 2: Navegação */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm uppercase tracking-wider">
               Plataforma
@@ -57,7 +54,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Coluna 3: Legal e Suporte */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm uppercase tracking-wider">
               Legal
@@ -92,10 +88,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* --- Barra Inferior (Copyright) --- */}
       <div className="border-t border-border">
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Texto Copy */}
           <div className="text-sm text-muted flex flex-col md:flex-row items-center gap-1 md:gap-4 text-center md:text-left">
             <span>
               &copy; {currentYear} Abide App. Todos os direitos reservados.
@@ -106,7 +100,6 @@ export default function Footer() {
             </span>
           </div>
 
-          {/* Redes Sociais */}
           <div className="flex items-center gap-4">
             <SocialLink
               href="#"

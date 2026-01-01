@@ -8,7 +8,7 @@ export default function Highlights({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="bg-surface border border-border radius flex flex-col items-center gap-4 p-4">
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
         {icon}
       </div>

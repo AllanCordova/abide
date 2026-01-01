@@ -1,18 +1,16 @@
 import { getVersesByDay } from "@/actions/Verse";
-import { TableRow } from "@/types/Tables"; // Ou o tipo correto dos seus versos
-import { Quote } from "lucide-react";
+import { TableRow } from "@/types/Tables";
+import { toast } from "sonner";
 
 interface DayVerseProps {
   dayId: number;
 }
 
 export async function DayVerse({ dayId }: DayVerseProps) {
-  // 1. O componente busca seus próprios dados
-  const { data, success } = await getVersesByDay(dayId);
+  const { data, error } = await getVersesByDay(dayId);
 
-  // Se der erro ou não tiver versos, não mostra nada (para não poluir o card)
-  if (!success || !data || (Array.isArray(data) && data.length === 0)) {
-    return null;
+  if (error) {
+    toast.error(error);
   }
 
   const verses = data as TableRow<"verses">[];

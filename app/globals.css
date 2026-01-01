@@ -11,11 +11,9 @@
   --primary-hover: #2563eb;
   --primary-foreground: #ffffff;
 
-  /* Aumentei o contraste aqui para a borda aparecer mais */
   --border: #3f3f46;
   --error: #ef4444;
 
-  /* Variável para controlar o arredondamento (8px = levemente arredondado) */
   --radius: 0.5rem;
 
   /* --- TEXTOS --- */
@@ -41,10 +39,9 @@
   --color-border: var(--border);
   --color-error: var(--error);
 
-  /* Mapeando o arredondamento para as classes do Tailwind */
-  --radius-lg: var(--radius); /* rounded-lg usará sua borda padrão */
-  --radius-md: calc(var(--radius) - 2px); /* rounded-md um pouco menor */
-  --radius-sm: calc(var(--radius) - 4px); /* rounded-sm bem pequeno */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 
   --font-poppins: var(--font-poppins-next), sans-serif;
 

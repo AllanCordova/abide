@@ -24,33 +24,29 @@ export function CompleteButton({
   const handleComplete = async () => {
     setIsLoading(true);
 
-    try {
-      const response = await toSubscribe({
-        day_id: dayId,
-        devotional_id: devotionalId,
-        is_completed: true,
-      });
+    const response = await toSubscribe({
+      day_id: dayId,
+      devotional_id: devotionalId,
+      is_completed: true,
+    });
 
-      if (response.success) {
-        setIsCompleted(true);
-        toast.success("Leitura concluída!", {
-          description: "Continue firme na sua jornada.",
-          icon: <PartyPopper className="text-primary" />,
-        });
-        router.refresh(); // Atualiza a página para refletir dados novos se houver
-      } else {
-        toast.error("Erro ao concluir", {
-          description: response.error as string,
-        });
-      }
-    } catch (error) {
-      toast.error("Erro inesperado. Tente novamente.");
-    } finally {
+    if (response.error) {
+      toast.error("Erro ao concluir", {
+        description: response.error,
+      });
       setIsLoading(false);
     }
+
+    setIsCompleted(true);
+    toast.success("Leitura concluída!", {
+      description: "Continue firme na sua jornada.",
+      icon: <PartyPopper className="text-primary" />,
+    });
+    router.refresh();
+
+    setIsLoading(false);
   };
 
-  // ESTADO: JÁ COMPLETADO (Selo de Sucesso)
   if (isCompleted) {
     return (
       <div className="flex flex-col items-center gap-2 animate-in zoom-in duration-300">
@@ -63,7 +59,6 @@ export function CompleteButton({
     );
   }
 
-  // ESTADO: BOTÃO DE AÇÃO
   return (
     <button
       onClick={handleComplete}
