@@ -19,7 +19,10 @@ export default class Model<T extends TableName> {
     filter?: Partial<TableFilter<T>>
   ): Promise<DbResponse<TableRow<T>[]>> {
     const supabase = await this.getClient();
-    let query = supabase.from(this._table).select();
+    let query = supabase
+      .from(this._table)
+      .select()
+      .order("created_at", { ascending: true });
 
     if (filter) {
       query = query.match(filter);
@@ -34,7 +37,7 @@ export default class Model<T extends TableName> {
   }
 
   public async getOne(
-    filter: Partial<TableFilter<T>>
+    filter?: Partial<TableFilter<T>>
   ): Promise<DbResponse<TableRow<T>>> {
     const supabase = await this.getClient();
     let query = supabase.from(this._table).select();
@@ -47,6 +50,24 @@ export default class Model<T extends TableName> {
 
     return {
       data: data as TableRow<T>,
+      error,
+    };
+  }
+
+  public async search(
+    column: string,
+    searchTerm: string
+  ): Promise<DbResponse<TableRow<T>[]>> {
+    const supabase = await this.getClient();
+
+    const { data, error } = await supabase
+      .from(this._table)
+      .select("*")
+      .ilike(column, `%${searchTerm}%`)
+      .order("created_at", { ascending: false });
+
+    return {
+      data: data as TableRow<T>[],
       error,
     };
   }

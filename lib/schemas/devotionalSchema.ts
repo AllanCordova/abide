@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const devotionalSchema = z.object({
-  title: z.string().min(10, "O Devocional precisa ter 10 caracteres"),
+  use: z.string().min(10, "O Devocional precisa ter 10 caracteres"),
   description: z
     .string()
     .max(300, "A Descrição pode ter no maximo 300 caracteres"),

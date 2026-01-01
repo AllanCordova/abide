@@ -4,10 +4,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        // Substitua pelo SEU domínio do Supabase (ex: abcdefgh.supabase.co)
+        // O hostname deve ser EXATAMENTE o que apareceu no erro
         hostname: "sixscyvxlclhcidajqrk.supabase.co",
         port: "",
-        pathname: "/storage/v1/object/public/**",
+        // CORREÇÃO AQUI:
+        // Use apenas o caminho relativo com "**" no final para aceitar qualquer arquivo/pasta
+        pathname: "/storage/v1/object/**",
       },
       {
         protocol: "https",

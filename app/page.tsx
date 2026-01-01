@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, BookOpen, Clock, Heart } from "lucide-react";
 import { DevotionalCard } from "@/components/devotionals/Card";
-import { Devotional, TableRow } from "@/types/Tables";
+import { Devotional } from "@/types/Tables";
 import { getDevotionals } from "@/actions/Devotional";
 import Highlights from "@/components/utils/Highlights";
 
@@ -60,28 +61,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      <section className="bg-surface border border-border radius-md py-16">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <Highlights
-            icon={<Clock size={32} />}
-            title="Tempo com Qualidade"
-            description="Leituras pensadas para caber na sua rotina, sem perder a profundidade bíblica."
-          />
-
-          <Highlights
-            icon={<BookOpen size={32} />}
-            title="Base Bíblica"
-            description="Todo conteúdo é fundamentado nas escrituras para garantir seu crescimento real."
-          />
-
-          <Highlights
-            icon={<Heart size={32} />}
-            title="Paz Interior"
-            description="Comece ou termine o dia focando no que realmente importa: sua conexão com Deus."
-          />
-        </div>
-      </section>
     </div>
   );
 }

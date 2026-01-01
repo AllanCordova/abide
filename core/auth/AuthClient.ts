@@ -26,7 +26,6 @@ export async function signIn(user: LoginType): Promise<ApiResponse> {
 }
 
 export async function signUp(user: LoginType): Promise<ApiResponse> {
-  // Validate only email and password (name and confirmPassword are handled in the form)
   const validation = loginSchema.safeParse(user);
 
   if (!validation.success) {
@@ -54,4 +53,3 @@ export async function signOut(): Promise<ApiResponse> {
 
   return { success: true };
 }
-
