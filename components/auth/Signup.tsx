@@ -5,12 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp } from "@/core/auth/AuthClient";
 import { createProfile } from "@/actions/Profile";
 import { Input } from "../form/Input";
-import { Profile } from "@/types/Tables";
 import { toast } from "sonner";
 import { signUpSchema, SignUpForm } from "@/lib/schemas/authSchema";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, Loader2, User, Mail, Lock, ArrowRight } from "lucide-react";
+import { BookOpen, Loader2, ArrowRight } from "lucide-react";
 
 const SignUp = () => {
   const router = useRouter();
@@ -30,7 +29,6 @@ const SignUp = () => {
       password: data.password,
     };
 
-    // First, sign up the user
     const signUpResponse = await signUp(userPayload);
 
     if (signUpResponse.error) {
@@ -39,7 +37,6 @@ const SignUp = () => {
       return;
     }
 
-    // If signup successful, create the profile using server action
     if (signUpResponse.data?.user?.id) {
       const profileResponse = await createProfile({
         id: signUpResponse.data.user.id,
@@ -56,16 +53,13 @@ const SignUp = () => {
     }
 
     toast.success("Conta criada com sucesso! Bem-vindo(a).");
-    // O router.refresh() garante que o Header identifique o novo usuário imediatamente
     router.refresh();
-    router.push("/");
+    router.push("/login");
   }
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
-      {/* Card Principal */}
       <div className="w-full max-w-md bg-surface border border-border rounded-2xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {/* Cabeçalho */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 text-primary">
             <BookOpen size={24} />
@@ -79,18 +73,15 @@ const SignUp = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Nome */}
           <div className="space-y-1">
             <Input
               label="Nome Completo"
               placeholder="Como você quer ser chamado?"
               error={errors.name?.message}
-              // Dica: Se seu Input aceitar ícone no futuro, use <User size={18} />
               {...register("name")}
             />
           </div>
 
-          {/* Email */}
           <div className="space-y-1">
             <Input
               label="E-mail"
@@ -101,7 +92,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Senha */}
           <div className="space-y-1">
             <Input
               label="Senha"
@@ -112,7 +102,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Confirmar Senha */}
           <div className="space-y-1">
             <Input
               label="Confirmar Senha"
@@ -123,14 +112,12 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Erro Geral */}
           {errors.root && (
             <div className="bg-error/10 border border-error/20 text-error p-3 rounded-lg text-sm text-center font-medium animate-pulse">
               {errors.root.message}
             </div>
           )}
 
-          {/* Botão Submit */}
           <button
             disabled={isSubmitting}
             className="
@@ -157,7 +144,6 @@ const SignUp = () => {
           </button>
         </form>
 
-        {/* Rodapé (Link Login) */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-sm text-muted">
             Já tem uma conta?{" "}

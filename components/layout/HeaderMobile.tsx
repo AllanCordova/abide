@@ -35,6 +35,13 @@ export function HeaderMobile({
         >
           Devocionais
         </MobileLink>
+        <MobileLink
+          href="/devotionals/subscribed"
+          onClick={onClose}
+          active={pathname.startsWith("/devotionals/subscribed")}
+        >
+          Devocionais Inscritos
+        </MobileLink>
       </nav>
 
       <hr className="border-border" />

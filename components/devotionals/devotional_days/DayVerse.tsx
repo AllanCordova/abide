@@ -1,6 +1,5 @@
 import { getVersesByDay } from "@/actions/Verse";
 import { TableRow } from "@/types/Tables";
-import { toast } from "sonner";
 
 interface DayVerseProps {
   dayId: number;
@@ -10,10 +9,15 @@ export async function DayVerse({ dayId }: DayVerseProps) {
   const { data, error } = await getVersesByDay(dayId);
 
   if (error) {
-    toast.error(error);
+    return null;
   }
 
-  const verses = data as TableRow<"verses">[];
+  const verses = data as TableRow<"verses">[] | undefined;
+
+  if (!verses || verses.length === 0) {
+    return null;
+  }
+
   const verse = verses[0];
 
   return (

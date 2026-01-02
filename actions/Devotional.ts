@@ -1,7 +1,6 @@
 "use server";
 
 import Model from "@/core/model/Model";
-import { createClient } from "@/database/supabase/Server";
 import { getErrorMessage } from "@/lib/errors/auth-errors";
 import { devotionalSchema } from "@/lib/schemas/devotionalSchema";
 import { ApiResponse } from "@/types/ApiResponse";

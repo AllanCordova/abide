@@ -15,22 +15,24 @@ export async function middleware(request: NextRequest) {
     "/devotionals/subscribed",
   ];
 
+  const authRoutes = ["/login", "/signup"];
+
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
-
-  const authRoutes = ["/login", "/signup"];
 
   const isAuthRoute = authRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
 
   if (isProtectedRoute && !user) {
-    const redirectUrl = new URL("/login", request.url);
+    const loginUrl = new URL("/login", request.url);
 
-    redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+    const currentPath = request.nextUrl.pathname + request.nextUrl.search;
 
-    return NextResponse.redirect(redirectUrl);
+    loginUrl.searchParams.set("callbackUrl", currentPath);
+
+    return NextResponse.redirect(loginUrl);
   }
 
   if (isAuthRoute && user) {
