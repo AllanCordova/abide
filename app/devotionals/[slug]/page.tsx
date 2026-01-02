@@ -2,12 +2,12 @@ import { getDevotionalsBySlug } from "@/actions/Devotional";
 import { getDevotionalDays } from "@/actions/DevotionalDays";
 import { getProfileById } from "@/lib/auth";
 import { Devotional } from "@/types/Tables";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { ContentDevotional } from "@/components/devotionals/ContentDevotional";
 import { DevotionalDaysContent } from "@/components/devotionals/devotional_days/DevotionalDaysContent";
+import { getAllSubscribed } from "@/actions/DaySubscriptions";
 
 interface DevotionalPageProps {
   params: Promise<{ slug: string }>;
@@ -21,8 +21,11 @@ export default async function ShowDevotional({ params }: DevotionalPageProps) {
   const devotional: Devotional = result.data;
   const daysResult = await getDevotionalDays(devotional.id);
   const days = daysResult.data || [];
+  const completedDaysResult = await getAllSubscribed(devotional.id);
+  const completedDays = completedDaysResult.data || [];
 
   const authorResponse = await getProfileById(devotional.author_id);
+
   const authorName = authorResponse.data?.name || "Equipe Abide";
 
   return (
@@ -53,9 +56,17 @@ export default async function ShowDevotional({ params }: DevotionalPageProps) {
       </div>
 
       <div className="container mx-auto px-4 -mt-20 relative z-10">
-        <ContentDevotional devotional={devotional} authorName={authorName} />
+        <ContentDevotional
+          devotional={devotional}
+          authorName={authorName}
+          day={days}
+        />
 
-        <DevotionalDaysContent days={days} slug={slug} />
+        <DevotionalDaysContent
+          days={days}
+          slug={slug}
+          completedDays={completedDays}
+        />
       </div>
     </article>
   );

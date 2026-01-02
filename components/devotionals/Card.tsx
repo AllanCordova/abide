@@ -1,40 +1,65 @@
-import { Devotional } from "@/types/Tables";
+import { Devotional, DaySubscriptions } from "@/types/Tables";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, User } from "lucide-react";
 import { getProfileById } from "@/lib/auth";
+import { getSubscriptionByDevotional } from "@/actions/UserSubscriptions";
+import { getAllSubscribed } from "@/actions/DaySubscriptions";
+import { getDevotionalDays } from "@/actions/DevotionalDays";
+import { DevotionalProgress } from "./DevotionalProgress";
+import { DevotionalActions } from "./DevotionalActions";
 
 interface DevotionalCardProps {
   data: Devotional;
 }
 
 export async function DevotionalCard({ data }: DevotionalCardProps) {
-  const { title, description, slug, created_at, image_url } = data;
+  const { id, title, description, slug, created_at, image_url, author_id } =
+    data;
 
-  const response = await getProfileById(data.author_id);
+  const response = await getProfileById(author_id);
+  const subscriptionResponse = await getSubscriptionByDevotional(id);
+  const daysResult = await getDevotionalDays(id);
+  const completedDaysResult = await getAllSubscribed(id);
 
   const formattedDate = created_at
     ? new Date(created_at).toLocaleDateString("pt-BR")
     : null;
 
-  const authorName = response.data.name;
+  const authorName = response.data?.name || "Autor desconhecido";
+  const isSubscribed = !!subscriptionResponse.data;
+  const subscribedId = subscriptionResponse.data?.id || null;
+  const days = daysResult.data || [];
+  const completedDays = completedDaysResult.data || [];
+  const completedCount = completedDays.filter(
+    (d: DaySubscriptions) => d.is_completed
+  ).length;
 
   return (
-    <div className="flex flex-col h-full bg-surface border border-border rounded-lg hover:border-primary/50 transition-colors duration-300 group overflow-hidden">
+    <div className="relative flex flex-col h-full bg-surface border border-border rounded-lg hover:border-primary/50 transition-colors duration-300 group overflow-hidden">
+      <div className="absolute top-2 right-2 z-10">
+        <DevotionalActions
+          devotionalId={id}
+          subscriptionId={subscribedId}
+        />
+      </div>
+
       {image_url && (
         <div className="relative w-full h-48 bg-muted/10">
           <Image
             src={image_url}
             alt={title}
             fill
+            quality={100}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       )}
 
-      <div className="p-fluid flex flex-col flex-grow">
-        <div className="flex justify-between items-center mb-3 text-fluid-sm text-muted">
+      <div className="p-fluid flex flex-col flex-grow p-4">
+        {" "}
+        <div className="flex justify-between items-center mb-3 text-sm text-muted">
           {formattedDate && (
             <span className="flex items-center gap-1">
               <Calendar size={14} /> {formattedDate}
@@ -44,23 +69,28 @@ export async function DevotionalCard({ data }: DevotionalCardProps) {
             <User size={14} /> {authorName}
           </span>
         </div>
-
         <Link href={`/devotionals/${slug}`}>
-          <h3 className="text-fluid-lg font-poppins font-bold text-foreground group-hover:text-primary transition-colors mb-2">
+          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-1">
             {title}
           </h3>
         </Link>
-
-        <p className="text-fluid-base text-muted mb-6 line-clamp-3">
-          {description}
-        </p>
-
-        <Link
-          href={`/devotionals/${slug}`}
-          className="mt-auto inline-flex justify-center items-center bg-primary text-primary-foreground font-semibold py-2 px-4 rounded hover:bg-primary-hover transition-colors"
-        >
-          Ler Devocional
-        </Link>
+        <p className="text-base text-muted mb-4 line-clamp-3">{description}</p>
+        {isSubscribed && days.length > 0 && (
+          <DevotionalProgress
+            totalDays={days.length}
+            completedCount={completedCount}
+            showIcon={false}
+            compact={false}
+          />
+        )}
+        <div className="mt-auto flex gap-3 items-center">
+          <Link
+            href={`/devotionals/${slug}`}
+            className="flex-1 inline-flex justify-center items-center bg-primary text-primary-foreground font-semibold py-2 px-4 rounded hover:bg-primary-hover transition-colors text-center"
+          >
+            Ler
+          </Link>
+        </div>
       </div>
     </div>
   );

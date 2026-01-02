@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { CheckCircle, Loader2, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
-import { toSubscribe } from "@/actions/DaySubscriptions";
+import { toSubscribeDevotionalDay } from "@/actions/DaySubscriptions";
+import {
+  subscribeToDevotional,
+  getSubscriptionByDevotional,
+} from "@/actions/UserSubscriptions";
 import { useRouter } from "next/navigation";
 
 interface CompleteButtonProps {
@@ -24,7 +28,28 @@ export function CompleteButton({
   const handleComplete = async () => {
     setIsLoading(true);
 
-    const response = await toSubscribe({
+    const subscriptionResponse = await getSubscriptionByDevotional(
+      devotionalId
+    );
+
+    if (!subscriptionResponse.data) {
+      const subscribeResponse = await subscribeToDevotional({
+        devotional_id: devotionalId,
+        current_day: 1,
+        is_completed: false,
+      });
+
+      if (subscribeResponse.error) {
+        toast.error("Erro ao inscrever-se", {
+          description: subscribeResponse.error,
+        });
+        setIsLoading(false);
+        router.push("/login");
+        return;
+      }
+    }
+
+    const response = await toSubscribeDevotionalDay({
       day_id: dayId,
       devotional_id: devotionalId,
       is_completed: true,
@@ -35,6 +60,9 @@ export function CompleteButton({
         description: response.error,
       });
       setIsLoading(false);
+      router.push("/login");
+
+      return;
     }
 
     setIsCompleted(true);

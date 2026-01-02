@@ -28,6 +28,12 @@ export function HeaderDesktop({
         >
           Devocionais
         </NavLink>
+        <NavLink
+          href="/devotionals/subscribed"
+          active={pathname.startsWith("/devotionals/subscribed")}
+        >
+          Devocionais Inscritos
+        </NavLink>
       </nav>
 
       <div className="hidden md:flex items-center gap-4">

@@ -1,14 +1,16 @@
-import { Devotional } from "@/types/Tables";
+import { Devotional, DevotionalDay } from "@/types/Tables";
 import { Calendar, User, Clock } from "lucide-react";
 
 interface ContentDevotionalProps {
   devotional: Devotional;
   authorName: string;
+  day: DevotionalDay[];
 }
 
 export function ContentDevotional({
   devotional,
   authorName,
+  day,
 }: ContentDevotionalProps) {
   const formattedDate = devotional.created_at
     ? new Date(devotional.created_at).toLocaleDateString("pt-BR", {
@@ -17,8 +19,6 @@ export function ContentDevotional({
         year: "numeric",
       })
     : null;
-
-  const readingTime = Math.ceil((devotional.description?.length || 0) / 500);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -36,7 +36,7 @@ export function ContentDevotional({
           </span>
           <span className="flex items-center gap-1.5">
             <Clock size={14} className="text-primary" />
-            {readingTime} min de leitura
+            {day.length} dias de palavra com Deus!
           </span>
         </div>
 

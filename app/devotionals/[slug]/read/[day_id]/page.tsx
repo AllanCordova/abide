@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen, HelpCircle } from "lucide-react";
 import { Verse, DaySubscriptions } from "@/types/Tables";
 import { CompleteButton } from "@/components/devotionals/devotional_days/CompleteButton";
+import { UnsubscribeDayButton } from "@/components/devotionals/devotional_days/UnsubscribeButton";
 
 interface ReadingPageProps {
   params: Promise<{
@@ -26,6 +27,7 @@ export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
   const response = await getSubscribed(day.devotional_id, day.id);
 
   const completedDay: DaySubscriptions = response.data;
+  const subscriptionId = completedDay?.id || null;
 
   if (completedDay) {
     isCompleted = completedDay.is_completed;
@@ -113,13 +115,22 @@ export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
           </div>
         )}
 
-        {/* --- BOTÃO DE AÇÃO (CLIENT COMPONENT) --- */}
+
         <div className="border-t border-border pt-8 flex justify-center">
-          <CompleteButton
-            dayId={day.id}
-            devotionalId={day.devotional_id}
-            isCompletedInitial={isCompleted}
-          />
+          {isCompleted && subscriptionId ? (
+            <UnsubscribeDayButton
+              dayId={day.id}
+              devotionalId={day.devotional_id}
+              subscriptionId={subscriptionId}
+              isSubscribedInitial={isCompleted}
+            />
+          ) : (
+            <CompleteButton
+              dayId={day.id}
+              devotionalId={day.devotional_id}
+              isCompletedInitial={isCompleted}
+            />
+          )}
         </div>
       </main>
     </div>

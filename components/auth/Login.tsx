@@ -6,12 +6,15 @@ import { signIn } from "@/core/auth/AuthClient";
 import { Input } from "../form/Input";
 import { loginSchema, LoginForm } from "@/lib/schemas/authSchema";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, Loader2 } from "lucide-react"; // Ícones para enriquecer
+import { BookOpen, Loader2 } from "lucide-react";
 
 const Login = () => {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const {
     register,
@@ -28,11 +31,12 @@ const Login = () => {
     if (res.error) {
       setError("root", { message: res.error });
       toast.error("Falha na autenticação");
-    } else {
-      toast.success("Bem-vindo de volta!");
-      router.push("/");
-      router.refresh();
+      return;
     }
+
+    toast.success("Bem-vindo de volta!");
+    router.push(callbackUrl);
+    router.refresh();
   }
 
   return (
