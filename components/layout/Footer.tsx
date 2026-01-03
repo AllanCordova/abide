@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Instagram, Twitter, Mail, Heart } from "lucide-react";
+import { BookOpen, Instagram, Twitter, Mail } from "lucide-react";
 import SocialLink from "../utils/SocialLink";
 
 export default function Footer() {

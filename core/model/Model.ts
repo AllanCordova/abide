@@ -101,7 +101,7 @@ export default class Model<T extends TableName> {
     const supabase = await this.getClient();
     const { data: createdData, error } = await supabase
       .from(this._table)
-      .insert(data as any)
+      .insert(data)
       .select()
       .single();
 
@@ -116,17 +116,12 @@ export default class Model<T extends TableName> {
   ): Promise<DbResponse<TableRow<T>>> {
     const supabase = await this.getClient();
 
-    // 1. Inicia a operação de DELETE
     let query = supabase.from(this._table).delete();
 
-    // 2. Aplica o "match" (WHERE).
-    // Se você passar { id: 1, user_id: '...' }, ele cria: WHERE id=1 AND user_id='...'
     if (filter) {
       query = query.match(filter);
     }
 
-    // 3. .select().single() é crucial para retornar o dado deletado
-    // e lançar erro se o filtro não encontrar nada (ex: usuário tentando deletar algo que não é dele)
     const { data, error } = await query.select().single();
 
     return {

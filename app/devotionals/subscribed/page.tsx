@@ -1,11 +1,10 @@
 import { getSubscribedDevotionals } from "@/actions/UserSubscriptions";
 import { DevotionalCard } from "@/components/devotionals/Card";
-import { Devotional } from "@/types/Tables";
 import { BookOpen, Heart } from "lucide-react";
+import { getArrayData } from "@/lib/api-helpers";
 
 export default async function DevotionalsSub() {
-  const response = await getSubscribedDevotionals();
-  const devotionals: Devotional[] = response.data || [];
+  const devotionals = getArrayData(await getSubscribedDevotionals());
 
   return (
     <div className="container mx-auto px-4 py-12 min-h-screen">

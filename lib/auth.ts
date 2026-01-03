@@ -1,7 +1,9 @@
 import supabase from "@/database/supabase/Client";
 import { ApiResponse } from "@/types/ApiResponse";
+import { User } from "@supabase/supabase-js";
+import { TableRow } from "@/types/Tables";
 
-export async function getUser(): Promise<ApiResponse> {
+export async function getUser(): Promise<ApiResponse<User | null>> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -9,7 +11,7 @@ export async function getUser(): Promise<ApiResponse> {
   return { success: true, data: user };
 }
 
-export async function getProfile(): Promise<ApiResponse> {
+export async function getProfile(): Promise<ApiResponse<TableRow<"profiles"> | null>> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -31,7 +33,9 @@ export async function getProfile(): Promise<ApiResponse> {
   return { success: true, data: data };
 }
 
-export async function getProfileById(id: string): Promise<ApiResponse> {
+export async function getProfileById(
+  id: string
+): Promise<ApiResponse<TableRow<"profiles">>> {
   const { data, error } = await supabase
     .from("profiles")
     .select("*")

@@ -1,13 +1,16 @@
 "use server";
 
 import Model from "@/core/model/Model";
-import { getUser } from "@/lib/auth-server";
-import { getErrorMessage } from "@/lib/errors/auth-errors";
+import { getUser } from "@/core/auth/AuthServer";
+import { getErrorMessage } from "@/lib/errors/errors";
 import { authenticatedAction } from "@/lib/safe-action";
 import { ApiResponse } from "@/types/ApiResponse";
-import { TableInsert } from "@/types/Tables";
+import { TableInsert, TableRow } from "@/types/Tables";
 
-async function subscribeLogic(userId: string, rawData: any) {
+async function subscribeLogic(
+  userId: string,
+  rawData: Omit<TableInsert<"user_subscriptions">, "user_id">
+) {
   const modelService = new Model("user_subscriptions");
 
   const { data, error } = await modelService.create({
@@ -33,17 +36,19 @@ async function unSubscribeLogic(userId: string, subscriptionId: number) {
 
 export async function subscribeToDevotional(
   rawData: Omit<TableInsert<"user_subscriptions">, "user_id">
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"user_subscriptions">>> {
   return authenticatedAction(subscribeLogic, rawData);
 }
 
 export async function unsubscribeToDevotional(
   subscriptionId: number
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"user_subscriptions">>> {
   return authenticatedAction(unSubscribeLogic, subscriptionId);
 }
 
-export async function getSubscribedDevotionals(): Promise<ApiResponse> {
+export async function getSubscribedDevotionals(): Promise<
+  ApiResponse<TableRow<"devotionals">[]>
+> {
   const user = await getUser();
 
   if (!user.data) {
@@ -85,7 +90,7 @@ export async function getSubscribedDevotionals(): Promise<ApiResponse> {
 
 export async function getSubscriptionByDevotional(
   devotional_id: number
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"user_subscriptions"> | null>> {
   const modelService: Model<"user_subscriptions"> = new Model(
     "user_subscriptions"
   );

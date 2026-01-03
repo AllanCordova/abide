@@ -1,13 +1,13 @@
 import { getDevotionalsBySlug } from "@/actions/Devotional";
 import { getDevotionalDays } from "@/actions/DevotionalDays";
 import { getProfileById } from "@/lib/auth";
-import { Devotional } from "@/types/Tables";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { ContentDevotional } from "@/components/devotionals/ContentDevotional";
 import { DevotionalDaysContent } from "@/components/devotionals/devotional_days/DevotionalDaysContent";
 import { getAllSubscribed } from "@/actions/DaySubscriptions";
+import { assertSuccess, getArrayData } from "@/lib/api-helpers";
 
 interface DevotionalPageProps {
   params: Promise<{ slug: string }>;
@@ -16,16 +16,11 @@ interface DevotionalPageProps {
 export default async function ShowDevotional({ params }: DevotionalPageProps) {
   const { slug } = await params;
 
-  const result = await getDevotionalsBySlug(slug);
-
-  const devotional: Devotional = result.data;
-  const daysResult = await getDevotionalDays(devotional.id);
-  const days = daysResult.data || [];
-  const completedDaysResult = await getAllSubscribed(devotional.id);
-  const completedDays = completedDaysResult.data || [];
+  const devotional = assertSuccess(await getDevotionalsBySlug(slug));
+  const days = getArrayData(await getDevotionalDays(devotional.id));
+  const completedDays = getArrayData(await getAllSubscribed(devotional.id));
 
   const authorResponse = await getProfileById(devotional.author_id);
-
   const authorName = authorResponse.data?.name || "Equipe Abide";
 
   return (

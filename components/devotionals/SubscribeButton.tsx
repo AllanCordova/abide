@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Heart, Loader2, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { subscribeToDevotional, getSubscriptionByDevotional } from "@/actions/UserSubscriptions";
+import { subscribeToDevotional } from "@/actions/UserSubscriptions";
 import { useRouter } from "next/navigation";
 
 interface SubscribeButtonProps {
@@ -70,4 +70,3 @@ export function SubscribeButton({
     </button>
   );
 }
-

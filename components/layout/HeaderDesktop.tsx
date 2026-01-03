@@ -1,6 +1,6 @@
 import Link from "next/link";
 import NavLink from "@/components/navigation/NavLink";
-import { LogOut, LogIn, UserPlus, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Profile } from "@/types/Tables";
 
 interface HeaderDesktopProps {

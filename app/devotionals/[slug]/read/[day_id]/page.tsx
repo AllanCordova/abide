@@ -1,12 +1,11 @@
 import { getDevotionalDayById } from "@/actions/DevotionalDays";
 import { getVersesByDay } from "@/actions/Verse";
 import { getSubscribed } from "@/actions/DaySubscriptions";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, HelpCircle } from "lucide-react";
-import { Verse, DaySubscriptions } from "@/types/Tables";
 import { CompleteButton } from "@/components/devotionals/devotional_days/CompleteButton";
 import { UnsubscribeDayButton } from "@/components/devotionals/devotional_days/UnsubscribeButton";
+import { assertSuccess, getDataOrNull } from "@/lib/api-helpers";
 
 interface ReadingPageProps {
   params: Promise<{
@@ -18,20 +17,14 @@ interface ReadingPageProps {
 export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
   const { slug, day_id } = await params;
 
-  const { data: day } = await getDevotionalDayById(day_id);
+  const day = assertSuccess(await getDevotionalDayById(day_id));
+  const verse = getDataOrNull(await getVersesByDay(day.id));
+  const completedDay = getDataOrNull(
+    await getSubscribed(day.devotional_id, day.id)
+  );
 
-  const verseResponse = await getVersesByDay(day.id);
-  const verses = Array.isArray(verseResponse.data) ? verseResponse.data : [];
-  let isCompleted = false;
-
-  const response = await getSubscribed(day.devotional_id, day.id);
-
-  const completedDay: DaySubscriptions = response.data;
+  const isCompleted = completedDay?.is_completed || false;
   const subscriptionId = completedDay?.id || null;
-
-  if (completedDay) {
-    isCompleted = completedDay.is_completed;
-  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -63,31 +56,26 @@ export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
         </div>
 
         {/* --- VERSÍCULOS --- */}
-        {verses.length > 0 && (
+        {verse && (
           <div className="mb-10 space-y-4">
-            {verses.map((verse: Verse) => (
-              <div
-                key={verse.id}
-                className="bg-surface border border-border rounded-xl p-6 md:p-8 relative overflow-hidden shadow-sm"
-              >
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
-                <div className="flex gap-4">
-                  <BookOpen
-                    className="text-primary/40 shrink-0 mt-1"
-                    size={24}
-                  />
-                  <div className="space-y-3">
-                    <p className="text-lg md:text-xl font-serif text-foreground/90 leading-relaxed italic">
-                      "{verse.text_content}"
-                    </p>
-                    <p className="text-sm font-bold text-primary uppercase tracking-wide">
-                      {verse.book_name} {verse.chapter}:{verse.verse_start}
-                      {verse.verse_end ? `-${verse.verse_end}` : ""}
-                    </p>
-                  </div>
+            <div
+              key={verse.id}
+              className="bg-surface border border-border rounded-xl p-6 md:p-8 relative overflow-hidden shadow-sm"
+            >
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
+              <div className="flex gap-4">
+                <BookOpen className="text-primary/40 shrink-0 mt-1" size={24} />
+                <div className="space-y-3">
+                  <p className="text-lg md:text-xl font-serif text-foreground/90 leading-relaxed italic">
+                    {verse.text_content}
+                  </p>
+                  <p className="text-sm font-bold text-primary uppercase tracking-wide">
+                    {verse.book_name} {verse.chapter}:{verse.verse_start}
+                    {verse.verse_end ? `-${verse.verse_end}` : ""}
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         )}
 
@@ -114,7 +102,6 @@ export default async function ShowDevotionalDay({ params }: ReadingPageProps) {
             </div>
           </div>
         )}
-
 
         <div className="border-t border-border pt-8 flex justify-center">
           {isCompleted && subscriptionId ? (

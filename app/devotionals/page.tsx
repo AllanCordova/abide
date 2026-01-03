@@ -1,11 +1,10 @@
 import { getDevotionals } from "@/actions/Devotional";
 import { DevotionalCard } from "@/components/devotionals/Card";
-import { Devotional } from "@/types/Tables";
 import { BookOpen } from "lucide-react";
-import { SearchInput } from "@/components/devotionals/SearchInput"; // Importe o componente novo
+import { SearchInput } from "@/components/devotionals/SearchInput";
+import { getArrayData } from "@/lib/api-helpers";
 
 interface PageProps {
-  // No Next.js 15 searchParams é uma Promise
   searchParams: Promise<{
     q?: string;
   }>;
@@ -14,8 +13,7 @@ interface PageProps {
 export default async function DevotionalsPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
 
-  const response = await getDevotionals(q);
-  const devotionals: Devotional[] = response.data || [];
+  const devotionals = getArrayData(await getDevotionals(q));
 
   return (
     <div className="container mx-auto px-4 py-12 min-h-screen">

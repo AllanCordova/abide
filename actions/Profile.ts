@@ -1,13 +1,13 @@
 "use server";
 
 import Model from "@/core/model/Model";
-import { Profile } from "@/types/Tables";
+import { Profile, TableRow } from "@/types/Tables";
 import { ApiResponse } from "@/types/ApiResponse";
-import { getErrorMessage } from "@/lib/errors/auth-errors";
+import { getErrorMessage } from "@/lib/errors/errors";
 
 export async function createProfile(
   profile: Omit<Profile, "id"> & { id: string }
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"profiles">>> {
   const modelService: Model<"profiles"> = new Model("profiles");
   const { data, error } = await modelService.create({
     ...profile,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlayCircle, CheckCircle, Lock } from "lucide-react";
+import { PlayCircle, CheckCircle } from "lucide-react";
 import { DaySubscriptions, DevotionalDay } from "@/types/Tables";
 import { DayVerse } from "./DayVerse";
 import { DevotionalProgress } from "@/components/devotionals/DevotionalProgress";
