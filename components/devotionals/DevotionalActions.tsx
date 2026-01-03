@@ -15,7 +15,7 @@ import { UnsubscribeButton } from "./UnsubscribeButton";
 
 interface DevotionalActionsProps {
   devotionalId: number;
-  subscriptionId?: number | null; // Se vier null/undefined, o usuário NÃO está inscrito
+  subscriptionId?: number | null;
 }
 
 export function DevotionalActions({
@@ -27,9 +27,7 @@ export function DevotionalActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          className="p-2 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg border border-white/10"
-        >
+        <button className="p-2 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-lg border border-white/10">
           <MoreVertical className="h-5 w-5 text-white" />
           <span className="sr-only">Abrir menu</span>
         </button>

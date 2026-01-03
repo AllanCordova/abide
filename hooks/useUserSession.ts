@@ -18,12 +18,14 @@ export function useUserSession() {
       return response.error;
     }
 
-    setProfile(response.data);
+    setProfile(response.data ?? null);
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    loadUser();
+    (async () => {
+      await loadUser();
+    })();
 
     const {
       data: { subscription },

@@ -37,9 +37,9 @@ const SignUp = () => {
       return;
     }
 
-    if (signUpResponse.data?.user?.id) {
+    if (signUpResponse.data?.id) {
       const profileResponse = await createProfile({
-        id: signUpResponse.data.user.id,
+        id: signUpResponse.data.id,
         name: data.name,
         role: "member",
         avatar_url: null,
@@ -52,9 +52,9 @@ const SignUp = () => {
       }
     }
 
-    toast.success("Conta criada com sucesso! Bem-vindo(a).");
+    toast.success("Conta criada com sucesso! faça login no APP.");
+    router.push("login");
     router.refresh();
-    router.push("/login");
   }
 
   return (

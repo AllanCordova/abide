@@ -1,4 +1,4 @@
-import { getUser } from "./auth-server";
+import { getUser } from "../core/auth/AuthServer";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 

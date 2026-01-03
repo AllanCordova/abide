@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Loader2, XCircle } from "lucide-react";
+import { Loader2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { unsubscribeToDevotional } from "@/actions/UserSubscriptions";
 import { useRouter } from "next/navigation";
@@ -61,4 +61,3 @@ export function UnsubscribeButton({
     </button>
   );
 }
-

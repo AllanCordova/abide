@@ -8,7 +8,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * @returns Object containing the Supabase client and configured response
  */
 export function createMiddlewareClient(request: NextRequest) {
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },

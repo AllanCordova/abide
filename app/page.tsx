@@ -1,15 +1,13 @@
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, BookOpen, Clock, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { DevotionalCard } from "@/components/devotionals/Card";
 import { Devotional } from "@/types/Tables";
 import { getDevotionals } from "@/actions/Devotional";
-import Highlights from "@/components/utils/Highlights";
+import { getArrayData } from "@/lib/api-helpers";
 
 export default async function Home() {
-  const { data: allDevotionals } = await getDevotionals();
-
-  const recentDevotionals = allDevotionals?.slice(0, 3) || [];
+  const devotionals = getArrayData(await getDevotionals());
+  const recentDevotionals = devotionals.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-16 pb-16">

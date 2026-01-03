@@ -2,11 +2,12 @@
 
 import supabase from "@/database/supabase/Client";
 import { LoginType } from "@/types/Login";
-import { getErrorMessage } from "@/lib/errors/auth-errors";
-import { loginSchema } from "@/lib/schemas/authSchema";
+import { getErrorMessage } from "@/lib/errors/errors";
+import { loginSchema, signUpSchema } from "@/lib/schemas/authSchema";
 import { ApiResponse } from "@/types/ApiResponse";
+import { User } from "@supabase/supabase-js";
 
-export async function signIn(user: LoginType): Promise<ApiResponse> {
+export async function signIn(user: LoginType): Promise<ApiResponse<User | null>> {
   const validation = loginSchema.safeParse(user);
 
   if (validation.error) {
@@ -22,11 +23,11 @@ export async function signIn(user: LoginType): Promise<ApiResponse> {
     return { success: false, error: getErrorMessage(error) };
   }
 
-  return { success: true, data };
+  return { success: true, data: data.user };
 }
 
-export async function signUp(user: LoginType): Promise<ApiResponse> {
-  const validation = loginSchema.safeParse(user);
+export async function signUp(user: LoginType): Promise<ApiResponse<User | null>> {
+  const validation = signUpSchema.safeParse(user);
 
   if (!validation.success) {
     return { success: false, error: validation.error.message };
@@ -41,10 +42,10 @@ export async function signUp(user: LoginType): Promise<ApiResponse> {
     return { success: false, error: getErrorMessage(error) };
   }
 
-  return { success: true, data };
+  return { success: true, data: data.user };
 }
 
-export async function signOut(): Promise<ApiResponse> {
+export async function signOut(): Promise<ApiResponse<void>> {
   const { error } = await supabase.auth.signOut();
 
   if (error) {

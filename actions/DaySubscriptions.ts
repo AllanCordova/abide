@@ -1,12 +1,16 @@
 "use server";
 
 import Model from "@/core/model/Model";
-import { getUser } from "@/lib/auth-server";
-import { getErrorMessage } from "@/lib/errors/auth-errors";
+import { getUser } from "@/core/auth/AuthServer";
+import { getErrorMessage } from "@/lib/errors/errors";
 import { authenticatedAction } from "@/lib/safe-action";
 import { ApiResponse } from "@/types/ApiResponse";
+import { TableInsert, TableRow } from "@/types/Tables";
 
-async function subscribeLogic(userId: string, rawData: any) {
+async function subscribeLogic(
+  userId: string,
+  rawData: Omit<TableInsert<"day_subscriptions">, "user_id">
+) {
   const modelService = new Model("day_subscriptions");
 
   const { data, error } = await modelService.create({
@@ -44,21 +48,23 @@ async function unSubscribeLogic(
   return { success: true, data: deletedData };
 }
 
-export async function toSubscribeDevotionalDay(rawData: any) {
+export async function toSubscribeDevotionalDay(
+  rawData: Omit<TableInsert<"day_subscriptions">, "user_id">
+) {
   return authenticatedAction(subscribeLogic, rawData);
 }
 
 export async function unsubscribeToDevotionalDay(
   day_id: number,
   devotional_id: number
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"day_subscriptions">>> {
   return authenticatedAction(unSubscribeLogic, { day_id, devotional_id });
 }
 
 export async function getSubscribed(
   devotional_id: number,
   day_id: number
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"day_subscriptions"> | null>> {
   const modelService: Model<"day_subscriptions"> = new Model(
     "day_subscriptions"
   );
@@ -66,7 +72,7 @@ export async function getSubscribed(
   const user = await getUser();
 
   if (!user.data) {
-    return { success: true, data: [] };
+    return { success: true, data: null };
   }
 
   const user_id = user.data.id;
@@ -86,7 +92,7 @@ export async function getSubscribed(
 
 export async function getAllSubscribed(
   devotional_id: number
-): Promise<ApiResponse> {
+): Promise<ApiResponse<TableRow<"day_subscriptions">[]>> {
   const modelService: Model<"day_subscriptions"> = new Model(
     "day_subscriptions"
   );

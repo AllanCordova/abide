@@ -8,6 +8,7 @@ import { getAllSubscribed } from "@/actions/DaySubscriptions";
 import { getDevotionalDays } from "@/actions/DevotionalDays";
 import { DevotionalProgress } from "./DevotionalProgress";
 import { DevotionalActions } from "./DevotionalActions";
+import { getArrayData, getDataOrNull } from "@/lib/api-helpers";
 
 interface DevotionalCardProps {
   data: Devotional;
@@ -17,20 +18,19 @@ export async function DevotionalCard({ data }: DevotionalCardProps) {
   const { id, title, description, slug, created_at, image_url, author_id } =
     data;
 
-  const response = await getProfileById(author_id);
+  const authorResponse = await getProfileById(author_id);
   const subscriptionResponse = await getSubscriptionByDevotional(id);
-  const daysResult = await getDevotionalDays(id);
-  const completedDaysResult = await getAllSubscribed(id);
+  const days = getArrayData(await getDevotionalDays(id));
+  const completedDays = getArrayData(await getAllSubscribed(id));
 
   const formattedDate = created_at
     ? new Date(created_at).toLocaleDateString("pt-BR")
     : null;
 
-  const authorName = response.data?.name || "Autor desconhecido";
-  const isSubscribed = !!subscriptionResponse.data;
-  const subscribedId = subscriptionResponse.data?.id || null;
-  const days = daysResult.data || [];
-  const completedDays = completedDaysResult.data || [];
+  const authorName = authorResponse.data?.name || "Autor desconhecido";
+  const subscription = getDataOrNull(subscriptionResponse);
+  const isSubscribed = !!subscription;
+  const subscribedId = subscription?.id || null;
   const completedCount = completedDays.filter(
     (d: DaySubscriptions) => d.is_completed
   ).length;
